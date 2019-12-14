@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     board = Board("", "");
     databaseReference = database.reference().child("community_board");
     databaseReference.onChildAdded.listen(_onEntryAdded); // Callback to function when data added
+    databaseReference.onChildChanged.listen(_onEntryChanged);
 
 
   }
@@ -123,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
       boardMessages.add(Board.fromSnapshot(event.snapshot));
     });
   }
+
   void handleSubmit(){
     final FormState form = formKey.currentState;
     if (form.validate()) {
@@ -131,6 +133,14 @@ class _MyHomePageState extends State<MyHomePage> {
       // save form data to the database
       databaseReference.push().set(board.toJson());
     }
+  }
 
+  void _onEntryChanged(Event event) {
+    var oldEntry = boardMessages.singleWhere((ennty){
+      return ennty.key == event.snapshot.key;
+    });
+    setState(() {
+      boardMessages[boardMessages.indexOf(oldEntry)] = Board.fromSnapshot(event.snapshot);
+    });
   }
 }
