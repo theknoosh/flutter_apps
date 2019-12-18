@@ -84,8 +84,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: FlatButton(
                   child: Text("Create Account"),
-                  onPressed: () => {},
+                  onPressed: () => _createUser(),
                   color: Colors.green,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FlatButton (
+                  child: Text("Signout"),
+                  onPressed: () => _logout(),
+                  color: Colors.orange,
+                  
                 ),
               ),
               new Image.network(_imageURL == null || _imageURL.isEmpty ?
@@ -112,5 +121,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return user;
 
+  }
+
+  Future _createUser() async {
+    FirebaseUser user = await _auth.createUserWithEmailAndPassword(
+        email: "paulEximos@gmail.com", password: "check12345")
+        .then((user) {
+          print("User created is: ${user.user.email}");
+    });
+  }
+
+  _logout() {
+    setState(() {
+      _googleSignIn.signOut();
+      _imageURL = null;
+    });
   }
 }
